@@ -33,4 +33,3 @@ class ReverseArray {
 		printArray(arr, 6);
 	}
 }
-/*This code is contributed by Devesh Agrawal*/
