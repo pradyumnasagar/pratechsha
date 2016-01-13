@@ -1,0 +1,10 @@
+z=read.delim("file.csv")
+row.names(z)=z[ ,1]
+clust=hclust(clust(z[ ,3:16]),method="complete")
+plot(clust)
+z.back=z[ ,-c(1,2)]
+ww=t(z.back)
+clust=hclust(clust(z[ ,3:16],method="euclidian"),method="complete")
+pdf(plot)
+plot(clust)
+dev.off()

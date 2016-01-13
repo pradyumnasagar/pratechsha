@@ -1,0 +1,18 @@
+x=imread('nature.jpg');
+x=imresize(x,[256 256]);
+y=double(x);
+[m,n]=size(y);
+l=double(255);
+a=double(round(l/1.25));
+b=double(round(2*l/2));
+for i=1:m
+    for j=1:n
+        if (y(i,j)>=a & y(i,j)<=b)
+            z(i,j)=l;
+        else
+            z(i,j)=y(i,j);
+        end
+    end
+end
+imshow(y);
+figure,imshow(z);

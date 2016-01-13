@@ -1,0 +1,6 @@
+a=imread('nature.jpg');
+l=255;
+c=l/log10(1+l);
+d=c*log10(1+double(a));
+imshow(a);
+figure,imshow(d);

@@ -1,0 +1,96 @@
+install.pakages("limma")
+source("https://bioconductor.org/biocLite.R")
+biocLite("limma")
+--------------------------------XOXOXO----------------------------------------------------------------------------------------------
+
+library(limma)
+
+targets<-readTargets("path/to/Targets.txt")
+RG<-read.maimages(targets$FileName,source="agilent")
+MA<-normalizeWithinArrays(RG, method = "loess",bc.method="normexp",offset=50)
+PlotMA3by2(MA)
+MA.q<-normalizeBetweenArrays(MA,method="quantile")
+design<-modelMatrix(targets,ref="normal")
+fit<-lmFit(MA.q ,design)
+eb<-eBayes(fit)
+tb<-topTable(eb,adjust.method="BH")
+tt<-topTable(eb,n=nrow(MA.q))
+topGenes<-tt[tt[ ,"P.Value"]<0.001]
+select<-rownames(topGenes)
+--------
+select<-as.numeric(select)
+
+SelectedProbes<-MA.q[select,]
+##above one to extract original value
+
+select<-rownames(tt)[tt$P.Value<=0.05&(tt$logFC>=0.5 | tt $logFC<=0.5)]
+##^ this extract all probes having p value less than 0.005 an log ratio of >=0.5 and <0.50
+
+##connect them from character vector to numeric vectors
+
+select<-as.numeric(select)
+SelectedProbes<-MA.q[select,]
+write.table(SelectedProbes,"OutputSelected.txt",row.names=T,col.names=T,sep="\t")
+------------------------------------XOXOXO----------------------------------------------------------------------------------------
+targets<-readTargets("path/to/Targets.txt")
+RG<-read.maimages(targets$FileName,source="agilent",columns=list(R="rMedianSignal",G="gMedianSignal",Rb="rBGMedianSignal",Gb="gBGMedianSignal"),annotation=c("Row","Col","ProbeName","SystematicName"),path="./")
+MA<-normalizeWithinArrays(RG, method = "loess",bc.method="normexp")
+MA.q<-normalizeBetweenArrays(MA,method="quantile")
+plotMA(RG[,1])
+plotDensities(RG)
+--
+##save output
+png(file.png)
+dev.off()
+--
+design<-c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+fit<-lmFit(MA.q,designn=design)
+eb<-eBayes(fit)
+tb<-topTable(eb,adjust.method="fdr",genelist=RG$genes,n=13066)
+write.table(tb,file="f.txt",sep="\t",row.names=FALSE)
+selected<-tb[(tb$P.Value)<0.05 & (tb&logFC)>1.5 |tb$logFC < -1,]
+PN<-selected$ProbeName
+MA_genes<-MA[MA$genes$ProbeName %in% PN ,]
+data<-as.matrix(MA_genes,rownames=PN)
+rownames(data)=PN
+heatmap(data,Rowv=TRUE,Colv=TRUE,ylab="Genes",xlab="Experiments",distfun=dist,hclustfun=hclust, labRow =rownames(data),labcol=colnames(data))
+--------------------------------------XOXOXO----------------------------------------------------------------------------------------
+targets<-readTargets("path/to/Targets.txt")
+RG<-read.maimages(targets$FileName,source="agilent",columns=list(R="rMedianSignal",G="gMedianSignal",Rb="rBGMedianSignal",Gb="gBGMedianSignal"),annotation=c("Row","Col","ProbeName","SystematicName"),path=" ")
+MA<-normalizeWithinArrays(RG, method = "loess", bc.method="normexp")
+MA.q<-normalizeBetweenArrays(MA,method="quantile")
+plotMA(RG[ ,1])
+plotDensities(RG)
+boxpllot(MA.q$M~col(MA.q$M),names=colnames(MA.q$M))
+design<-c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+design<-modelMatrix(targets,ref="normal")
+fit<-lmFit(MA.q,designn=design)
+eb<-eBayes(fit)
+tb<-topTable(eb,adjust.method="fdr",genelist=RG$genes,n=13066)
+write.table(tb,file="f.txt",sep="\t",row.names=FALSE)
+selected<-tb[(tb$P.Value)<0.05 & (tb&logFC)>1.5 | tb$logFC < -1,]
+PN<-selected$ProbeName
+MA_genes<-MA[MA $genes $ProbeName %in% PN,]
+data<-as.matrix(MA_genes,rownames=PN)
+rownames(data)=PN
+heatmap(data,Rowv=TRUE,Colv=TRUE,ylab="Genes",xlab="Experiments",distfun=dist,hclustfun=hclust, labRow =rownames(data),labcol=colnames(data))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
